@@ -1,0 +1,27 @@
+name: Weston Daily Shop Tracker
+
+on:
+  schedule:
+    - cron: '5 0 * * *' # Chạy lúc 00:05 UTC (07:05 sáng Việt Nam) mỗi ngày
+  workflow_dispatch: # Cho phép bấm chạy thử thủ công
+
+jobs:
+  run-tracker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Run Scraper
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: python main.py
